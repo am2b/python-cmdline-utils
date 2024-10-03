@@ -52,6 +52,7 @@ def process_directory(input_dir, output_dir, recursive=False):
     - output_dir: 输出目录的路径
     - recursive: 是否递归处理子目录 (默认值为 False)
     """
+
     if recursive:
         # 使用 os.walk 遍历目录树，递归处理所有子目录
         for root, dirs, files in os.walk(input_dir):
@@ -80,10 +81,6 @@ def process_directory(input_dir, output_dir, recursive=False):
                     # 转换为灰度图像并保存
                     convert_to_grayscale(file_path, output_path)
     else:
-        # 如果不递归，只处理输入目录下的文件
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-
         # 遍历输入目录中的所有文件
         for file_name in os.listdir(input_dir):
             file_path = os.path.join(input_dir, file_name)
@@ -104,8 +101,9 @@ def main():
     """
     # 创建 ArgumentParser 对象用于解析命令行参数
     parser = argparse.ArgumentParser(description="将图片转换为灰度图像")
-    # 添加输入路径参数（必须提供）
-    parser.add_argument("-i", "--input", required=True, help="输入的图片文件或目录")
+    # 添加输入路径参数，支持多个文件路径（必须提供）
+    parser.add_argument("-i", "--input", required=True,
+                        nargs='+', help="输入的图片文件路径（可接受多个文件或目录）")
     # 添加输出目录参数（必须提供）
     parser.add_argument("-o", "--output", required=True, help="输出目录")
     # 添加递归处理选项，使用 -r 时将递归处理子目录
@@ -115,29 +113,35 @@ def main():
     # 解析命令行参数
     args = parser.parse_args()
 
-    # 获取输入路径、输出目录和递归选项的值
-    input_path = args.input
+    # 获取输入路径列表、输出目录和递归选项的值
+    input_paths = args.input
     output_dir = args.output
     recursive = args.recursive
 
-    # 检查输入路径是文件还是目录
-    if os.path.isfile(input_path):
-        # 如果是单个文件，则进行单张图片处理
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        # 分离文件名和扩展名
-        file_name, file_ext = os.path.splitext(os.path.basename(input_path))
-        # 构建输出文件路径
-        output_path = os.path.join(
-            output_dir, f"{file_name}_grayscale{file_ext}")
-        # 转换为灰度图像并保存
-        convert_to_grayscale(input_path, output_path)
-    elif os.path.isdir(input_path):
-        # 如果是目录，则处理目录中的图片
-        process_directory(input_path, output_dir, recursive=recursive)
-    else:
-        # 如果输入路径无效，输出错误信息
-        print(f"无效的输入路径: {input_path}")
+    # 确保输出目录存在
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # 处理多个输入文件或目录
+    for input_path in input_paths:
+        if os.path.isfile(input_path):
+            # 如果是单个文件，则进行单张图片处理
+            file_base_name = os.path.basename(input_path)
+            # 检查文件是否是图片文件
+            if file_base_name.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff')):
+                # 分离文件名和扩展名
+                file_name, file_ext = os.path.splitext(file_base_name)
+                # 构建输出文件路径
+                output_path = os.path.join(
+                    output_dir, f"{file_name}_grayscale{file_ext}")
+                # 转换为灰度图像并保存
+                convert_to_grayscale(input_path, output_path)
+        elif os.path.isdir(input_path):
+            # 如果是目录，则处理目录中的图片
+            process_directory(input_path, output_dir, recursive=recursive)
+        else:
+            # 如果输入路径无效，输出错误信息
+            print(f"无效的输入路径: {input_path}")
 
 
 if __name__ == "__main__":
