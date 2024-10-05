@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "imgease"
-version = "0.2.1"
+version = "0.2.0"
 description = "A collection of CLI tools for image processing."
 authors = ["am2b"]
 readme = "README.md"
