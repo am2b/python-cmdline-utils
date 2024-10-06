@@ -11,8 +11,9 @@ imgease-grayscale = "imgease.grayscale:main"
 imgease-convert = "imgease.convert:main"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.8,<3.14"
 pillow = "^10.4.0"
+pyinstaller = "^6.10.0"
 
 [build-system]
 requires = ["poetry-core"]
