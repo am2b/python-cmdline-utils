@@ -30,12 +30,14 @@ jobs:
         run: |
           poetry run pip install pyinstaller
 
-      #将 convert.py 和 grayscale.py 分别打包为独立的 .exe 文件。你可以调整打包的脚本路径，打包成一个或多个可执行文件。
+      #将 convert.py 和 grayscale.py 分别打包为独立的.exe文件。你可以调整打包的脚本路径，打包成一个或多个可执行文件。
       - name: Build Executable with PyInstaller
         working-directory: imgease  # 指定 pyproject.toml 所在目录
         run: |
           poetry run pyinstaller --onefile src/imgease/convert.py  # 打包 convert 脚本
           poetry run pyinstaller --onefile src/imgease/grayscale.py  # 打包 grayscale 脚本
+          echo "Executable files generated:"
+          ls dist
 
       # 检查是否生成了.exe文件
       - name: Verify exe files
@@ -43,8 +45,8 @@ jobs:
         run: |
           #.exe 文件是否存在的验证将在 PowerShell 环境下正常执行
           #Test-Path 是 PowerShell 中用于检查文件或目录是否存在的命令
-          if (-Not (Test-Path 'dist\imgease-convert.exe')) { exit 1 }
-          if (-Not (Test-Path 'dist\imgease-grayscale.exe')) { exit 1 }
+          if (-Not (Test-Path 'dist\convert.exe')) { exit 1 }
+          if (-Not (Test-Path 'dist\grayscale.exe')) { exit 1 }
 
       #使用 PowerShell 的 Compress-Archive 命令将生成的可执行文件压缩为一个 zip 文件，方便上传和分发。
       - name: Create a zip of executables
