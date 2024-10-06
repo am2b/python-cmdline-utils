@@ -36,7 +36,7 @@ jobs:
         run: |
           poetry run pyinstaller --onefile src/imgease/convert.py  # 打包 convert 脚本
           poetry run pyinstaller --onefile src/imgease/grayscale.py  # 打包 grayscale 脚本
-          #
+
       # 检查是否生成了.exe文件
       - name: Verify exe files
         working-directory: imgease  # 指定 pyproject.toml 所在目录
