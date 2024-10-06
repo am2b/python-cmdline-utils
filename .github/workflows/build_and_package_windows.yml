@@ -52,10 +52,10 @@ jobs:
       - name: Create a zip of executables
         working-directory: imgease  # 指定 pyproject.toml 所在目录
         run: |
-          Compress-Archive -Path dist/* -DestinationPath imgease_windows_executables.zip
+          Compress-Archive -Path dist/* -DestinationPath ../imgease_windows_executables.zip
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-executables
-          path: imgease_windows_executables.zip
+          path: ../imgease_windows_executables.zip
